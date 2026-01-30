@@ -4,23 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('cars', function (Blueprint $table) {
+        Schema::create('car_bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('model', 255);
-            $table->foreignId('comfort_category_id')
-                ->constrained('comfort_categories')
-                ->onDelete('set null');
+            $table->foreignId('car_id')
+                ->constrained('cars')
+                ->onDelete('cascade');
             $table->foreignId('user_id')
-                ->nullable()
                 ->constrained('users')
-                ->onDelete('set null');
-            $table->timestamps();
+                ->onDelete('cascade');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('cars');
+        Schema::dropIfExists('car_bookings');
     }
 };

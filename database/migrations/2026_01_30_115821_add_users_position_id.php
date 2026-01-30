@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('position_id')
+                ->constrained('positions')
+                ->onDelete('set null');
+            $table->enum('role', ['admin', 'manager', 'employee'])->default('user');
+        });
     }
 
     /**
@@ -19,6 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['position_id']);
+            $table->dropColumn('position_id');
+        });
     }
 };

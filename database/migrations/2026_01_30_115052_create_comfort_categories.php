@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('comfort_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 255);
             $table->timestamps();
         });
     }

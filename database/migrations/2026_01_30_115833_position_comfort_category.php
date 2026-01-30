@@ -11,7 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('position_comfort_category', function (Blueprint $table) {
+            $table->foreignId('position_id')
+                ->constrained('positions')
+                ->cascadeOnDelete();
+            $table->foreignId('comfort_category_id')
+                ->constrained('comfort_categories')
+                ->cascadeOnDelete();
+                $table->primary(['position_id', 'comfort_category_id']);
+        });
     }
 
     /**
@@ -19,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('position_comfort_category');
     }
 };
