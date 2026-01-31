@@ -17,7 +17,27 @@ class PositionsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+        ];
+    }
+    public function basePosition()
+    {
+        return [
+            [
+                'id' => 1,
+                'name' => 'Developer',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Manager',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Designer',
+            ],
+            [
+                'id' => 4,
+                'name' => 'QA Engineer',
+            ],
         ];
     }
 }

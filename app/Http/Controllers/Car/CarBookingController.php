@@ -1,24 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Car;
 
-use App\Models\Cars;
+use App\Models\CarBooking;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class CarsController extends Controller
+class CarBookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
         //
     }
@@ -34,15 +27,7 @@ class CarsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cars $cars)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cars $cars)
+    public function show(CarBooking $carBooking)
     {
         //
     }
@@ -50,7 +35,7 @@ class CarsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cars $cars)
+    public function update(Request $request, CarBooking $carBooking)
     {
         //
     }
@@ -58,7 +43,7 @@ class CarsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cars $cars)
+    public function destroy(CarBooking $carBooking)
     {
         //
     }

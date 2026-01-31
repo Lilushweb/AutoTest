@@ -2,48 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Positions;
+use App\Http\DTO\PositionDTO;
+use App\Http\Requests\PaginationRequest;
+use App\Http\Requests\Position\PositionCreateRequest;
+use App\Http\Service\PositionService;
+use App\Models\Position;
 use Illuminate\Http\Request;
+use App\Http\Requests\Position\PositionUpdateRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PositionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+    public function __construct(
+        private PositionService $positionService,
+    ) {
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function index(PaginationRequest $request)
     {
-        //
+        $paginator = $request->validated();
+        $response = Position::with('comfortCategories')
+            ->paginate(
+                $paginator['per_page'],
+                ['*'],
+                'page',
+                $paginator['page']
+            );
+
+        return response()->json($response);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Positions $positions)
+    public function store(PositionCreateRequest $request)
     {
-        //
+        $dto = new PositionDTO(
+            name: $request->validated('name'),
+            comfortCategoryIds: $request->validated('comfort_category'),
+        );
+        $createPosition = $this->positionService->createPosition($dto);
+
+        return response()->json($createPosition, 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Positions $positions)
+    public function update(PositionUpdateRequest $request, Position $position)
     {
-        //
+        try {
+            $position = Position::findOrFail($position->id);
+            $dto = new PositionDTO(
+                name: $request->validated('name'),
+                comfortCategoryIds: $request->validated('comfort_category'),
+            );
+            $update = $this->positionService->updatePosition($position, $dto);
+            return response()->json($update, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Position not found'], 404);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Positions $positions)
+    public function destroy(Position $position)
     {
-        //
+        $position->delete();
+        return response()->json(null, 200);
     }
 }

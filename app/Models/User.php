@@ -52,7 +52,7 @@ class User extends Authenticatable
 
     public function position(): BelongsTo
     {
-        return $this->belongsTo(Positions::class);
+        return $this->belongsTo(Position::class);
     }
 
     public function cars(): HasMany

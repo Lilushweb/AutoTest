@@ -15,6 +15,6 @@ class ComfortCategory extends Model
     ];
     public function position()
     {
-        return $this->hasMany(Positions::class,'position_comfort_category');
+        return $this->hasMany(Position::class, 'position_comfort_category');
     }
 }

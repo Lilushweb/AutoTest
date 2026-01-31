@@ -2,48 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\DTO\ComfortCategoryDTO;
+use App\Http\Requests\ComfortCategory\ComfortCategoryCreateRequest;
+use App\Http\Requests\ComfortCategory\ComfrotCategoryUpdateRequest;
+use App\Http\Requests\PaginationRequest;
 use App\Models\ComfortCategory;
 use Illuminate\Http\Request;
 
 class ComfortCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(PaginationRequest $request)
     {
-        //
+        $paginatior = $request->validated();
+        $response = ComfortCategory::paginate(
+            $paginatior['per_page'],
+            ['*'],
+            'page',
+            $paginatior['page']
+        );
+
+        return response()->json($response);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(ComfortCategoryCreateRequest $request)
     {
-        //
+        $name = $request->validated()['name'];
+        $dto = new ComfortCategoryDTO(
+            name: $name,
+        );
+        $createComfortCategory = ComfortCategory::create([
+            'name' => $dto->name,
+        ]);
+        return response()->json($createComfortCategory, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ComfortCategory $comfortCategory)
+
+    public function update(ComfrotCategoryUpdateRequest $request, ComfortCategory $comfortCategory)
     {
-        //
+        $dto = new ComfortCategoryDTO(
+            name: $request->validated('name'),
+        );
+        $comfortCategory->update([
+            'name' => $dto->name,
+        ]);
+        return response()->json($comfortCategory, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ComfortCategory $comfortCategory)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(ComfortCategory $comfortCategory)
     {
-        //
+        $comfortCategory->delete();
+        return response()->json(null, 200);
     }
 }

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\PositionsSeeder;
+use Database\Seeders\ComfortCategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +22,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'position_id' => 1,
+            'role' => 'admin',
         ]);
     }
 }

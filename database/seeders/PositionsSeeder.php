@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Position;
 use Illuminate\Database\Seeder;
 
 class PositionsSeeder extends Seeder
@@ -12,6 +12,15 @@ class PositionsSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $positions = [
+            ['name' => 'Developer'],
+            ['name' => 'Manager'],
+            ['name' => 'Designer'],
+            ['name' => 'QA Engineer'],
+        ];
+
+        foreach ($positions as $position) {
+            Position::create($position);
+        }
     }
 }
