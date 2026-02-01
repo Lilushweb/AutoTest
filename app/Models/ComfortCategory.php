@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ComfortCategory extends Model
 {
@@ -13,8 +14,13 @@ class ComfortCategory extends Model
     protected $fillable = [
         'name',
     ];
-    public function position()
+    public function position(): BelongsToMany
     {
-        return $this->hasMany(Position::class, 'position_comfort_category');
+        return $this->belongsToMany(
+            Position::class,
+            'position_comfort_category',
+            'comfort_category_id',
+            'position_id'
+        );
     }
 }

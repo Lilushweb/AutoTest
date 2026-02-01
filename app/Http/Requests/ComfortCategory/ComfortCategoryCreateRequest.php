@@ -22,7 +22,9 @@ class ComfortCategoryCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required","string", "max:255",]
+            "name" => ["required", "string", "max:255",],
+            "position_ids" => ["required", "array"],
+            "position_ids.*" => ["required", "integer", "exists:positions,id"],
         ];
     }
 }

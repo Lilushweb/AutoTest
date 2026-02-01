@@ -45,17 +45,13 @@ class PositionsController extends Controller
 
     public function update(PositionUpdateRequest $request, Position $position)
     {
-        try {
-            $position = Position::findOrFail($position->id);
-            $dto = new PositionDTO(
-                name: $request->validated('name'),
-                comfortCategoryIds: $request->validated('comfort_category'),
-            );
-            $update = $this->positionService->updatePosition($position, $dto);
-            return response()->json($update, 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Position not found'], 404);
-        }
+        $validated = $request->validated();
+        $dto = new PositionDTO(
+            name: $validated['name'] ?? $position->name,
+            comfortCategoryIds: $validated['comfort_category'] ?? $position->comfortCategories->pluck('id')->toArray(),
+        );
+        $update = $this->positionService->updatePosition($position, $dto);
+        return response()->json($update, 200);
     }
 
     public function destroy(Position $position)

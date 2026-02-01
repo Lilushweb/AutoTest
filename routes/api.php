@@ -10,6 +10,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('cars', CarController::class)->except(['show']);;
+Route::apiResource('cars', CarController::class)->except(['show']);
 Route::apiResource('positions', PositionsController::class)->except(['show']);
 Route::apiResource('comfortCategory', ComfortCategoryController::class)->except(['show']);

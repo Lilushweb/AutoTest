@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Position;
+namespace App\Http\Requests\Car;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PositionUpdateRequest extends FormRequest
+class CreateCar extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class PositionUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'comfort_category' => 'sometimes|array',
-            'comfort_category.*' => 'required|integer|exists:comfort_categories,id',
+            'model' => 'required|string|max:255',
+            'comfort_category_id' => 'required|integer|exists:comfort_categories,id',
         ];
     }
 }

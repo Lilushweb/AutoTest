@@ -4,7 +4,7 @@ namespace App\Http\Requests\ComfortCategory;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ComfrotCategoryUpdateRequest extends FormRequest
+class ComfortCategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,9 @@ class ComfrotCategoryUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255'],
+            "position_ids" => ["sometimes", "array"],
+            "position_ids.*" => ["required", "integer", "exists:positions,id"],
         ];
     }
 }

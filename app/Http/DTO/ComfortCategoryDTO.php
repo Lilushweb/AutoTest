@@ -6,5 +6,6 @@ class ComfortCategoryDTO
 {
     public function __construct(
         public string $name,
+        public array $positionIds = [],
     ) {}
 }
