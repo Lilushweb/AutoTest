@@ -7,39 +7,37 @@ use App\Models\Position;
 use Illuminate\Support\Facades\DB;
 class PositionService
 {
-    public function createPosition(PositionDTO $dto): Position|array
+    public function createPosition(PositionDTO $dto): Position
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $position = Position::create([
-                'name' => $dto->name,
+                'name' => mb_strtolower($dto->name),
             ]);
             $position->comfortCategories()->sync($dto->comfortCategoryIds);
 
             DB::commit();
-        } catch (\Exception $e) {
+            return $position->load(['comfortCategories']);
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return ['error' => $e];
+            throw $e;
         }
-        return $position;
     }
-    public function updatePosition(Position $position, PositionDTO $dto): Position|array
-    {
-        try {
-            DB::beginTransaction();
 
+    public function updatePosition(Position $position, PositionDTO $dto): Position
+    {
+        DB::beginTransaction();
+        try {
             $position->update([
-                'name' => $dto->name,
+                'name' => mb_strtolower($dto->name),
             ]);
             $position->comfortCategories()->sync($dto->comfortCategoryIds);
 
             DB::commit();
-        } catch (\Exception $e) {
+            return $position->fresh(['comfortCategories']);
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return ['error' => $e];
+            throw $e;
         }
-
-        return $position;
     }
 }

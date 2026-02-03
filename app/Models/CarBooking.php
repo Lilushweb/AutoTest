@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CarBooking extends Model
 {
@@ -14,23 +15,24 @@ class CarBooking extends Model
     protected $fillable = [
         'car_id',
         'user_id',
-        'start_date',
-        'end_date',
+        'start_time',
+        'end_time',
     ];
 
     protected function casts(): array
     {
         return [
-            'start_date' => 'datetime',
-            'end_date' => 'datetime',
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
         ];
     }
 
-    public function car()
+    public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class, 'car_id');
     }
-    public function user()
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

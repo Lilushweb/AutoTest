@@ -8,38 +8,37 @@ use Illuminate\Support\Facades\DB;
 
 class ComfortCategoryService
 {
-    public function createComfortCategory(ComfortCategoryDTO $dto)
+    public function createComfortCategory(ComfortCategoryDTO $dto): ComfortCategory
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $comfortCategory = ComfortCategory::create([
-                'name' => $dto->name,
+                'name' => mb_strtolower($dto->name),
             ]);
             $comfortCategory->position()->sync($dto->positionIds);
 
             DB::commit();
-        } catch (\Exception $e) {
+            return $comfortCategory->load(['position']);
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return ['error' => $e];
+            throw $e;
         }
-        return $comfortCategory;
     }
-    public function updateComfortCategory(ComfortCategory $comfortCategory,ComfortCategoryDTO $dto)
+
+    public function updateComfortCategory(ComfortCategory $comfortCategory, ComfortCategoryDTO $dto): ComfortCategory
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $comfortCategory->update([
-                'name' => $dto->name,
+                'name' => mb_strtolower($dto->name),
             ]);
             $comfortCategory->position()->sync($dto->positionIds);
-            $comfortCategory->save();
 
             DB::commit();
-        } catch (\Exception $e) {
+            return $comfortCategory->fresh(['position']);
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return ['error' => $e];
+            throw $e;
         }
-        return $comfortCategory;
     }
 }

@@ -1,59 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Система управления служебными автомобилями
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API для выбора и бронирования служебных автомобилей в корпоративной среде.
 
-## About Laravel
+## Техническое задание
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+В компании предусмотрена возможность выбора служебного автомобиля для служебной поездки из не занятых другими сотрудниками. В административной части корпоративного сайта необходимо размещать актуальную информацию о доступных для конкретного сотрудника автомобилях на запланированное время поездки.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Дополнительные условия:**
+- каждая модель автомобиля имеет определённую категорию комфорта (первая, вторая, третья...);
+- для определённой должности сотрудников доступны только автомобили определённой категории комфорта (одной или нескольких категорий);
+- за каждым автомобилем закреплён свой водитель.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Реализовано:**
+1. Миграции для создания таблиц и связей в БД;
+2. API-метод получения списка доступных текущему пользователю автомобилей с фильтрацией по модели и категории комфорта.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Требования
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2+
+- Composer
+- MySQL / PostgreSQL / SQLite
 
-## Laravel Sponsors
+## Установка
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Клонирование и установка зависимостей
+git clone <repository-url>
+cd autoTest
+composer install
 
-### Premium Partners
+# Конфигурация
+cp .env.example .env
+php artisan key:generate
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# База данных
+php artisan migrate
+php artisan db:seed  # при необходимости
+```
 
-## Contributing
+## Запуск
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan serve
+```
 
-## Code of Conduct
+API доступен по адресу: `http://localhost:8000/api`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## API
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Аутентификация
 
-## License
+Используется Laravel Sanctum (токены). Для защищённых маршрутов передавайте заголовок:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+Authorization: Bearer <token>
+```
+
+### Маршруты
+
+| Метод | Endpoint | Описание | Auth |
+|-------|----------|----------|------|
+| POST | `/api/register` | Регистрация | — |
+| POST | `/api/login` | Вход | — |
+| POST | `/api/logout` | Выход | ✓ |
+| GET | `/api/user` | Текущий пользователь | ✓ |
+| GET | `/api/cars/available` | Список доступных автомобилей | ✓ |
+| GET | `/api/cars` | Список всех автомобилей (пагинация) | ✓ |
+| POST | `/api/cars` | Создание автомобиля | ✓ |
+| PUT | `/api/cars/{car}` | Обновление автомобиля | ✓ |
+| DELETE | `/api/cars/{car}` | Удаление автомобиля | ✓ |
+| GET | `/api/carBookings` | Мои бронирования | ✓ |
+| POST | `/api/carBookings` | Создание бронирования | ✓ |
+| PUT | `/api/carBookings/{carBooking}` | Обновление бронирования | ✓ |
+| DELETE | `/api/carBookings/{carBooking}` | Отмена бронирования | ✓ |
+| GET | `/api/positions` | Должности | ✓ |
+| GET | `/api/comfortCategory` | Категории комфорта | ✓ |
+
+### Доступные автомобили
+
+```
+GET /api/cars/available?start_time=2025-02-10+09:00:00&end_time=2025-02-10+18:00:00&search=bmw&comfort_category_id[]=1
+```
+
+**Параметры:**
+- `start_time` (required) — начало поездки
+- `end_time` (required) — окончание поездки
+- `search` (optional) — поиск по модели
+- `comfort_category_id` (optional) — массив ID категорий комфорта (по умолчанию — категории должности пользователя)
+
+### Создание бронирования
+
+```
+POST /api/carBookings
+Content-Type: application/json
+
+{
+  "car_id": 1,
+  "start_time": "2025-02-10 09:00:00",
+  "end_time": "2025-02-10 18:00:00"
+}
+```
+
+---
+
+## Структура БД
+
+```
+users
+├── position_id → positions
+└── role (admin, manager, employee)
+
+positions
+└── position_comfort_category (pivot) → comfort_categories
+
+comfort_categories
+
+cars
+├── comfort_category_id → comfort_categories
+└── user_id (водитель/текущий владелец) → users
+
+car_bookings
+├── car_id → cars
+├── user_id → users
+├── start_time
+└── end_time
+```
+
+**Связи:**
+- **Car** — принадлежит категории комфорта, может быть закреплён за пользователем (водитель/владелец)
+- **Position** — many-to-many с ComfortCategory (какие категории доступны должности)
+- **CarBooking** — связывает автомобиль и пользователя на период времени
+
+---
+
+## Структура проекта
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── AuthController.php
+│   │   ├── Car/CarController, CarBookingController
+│   │   ├── ComfortCategoryController
+│   │   └── PositionsController
+│   ├── DTO/
+│   │   ├── CarDTO, UpdateCarDTO, AvailableCarsFilterDTO
+│   │   ├── CarBookingDTO, UpdateCarBookingDTO
+│   │   ├── ComfortCategoryDTO
+│   │   └── PositionDTO
+│   ├── Requests/Car/        # FormRequest для валидации
+│   ├── Resources/          # CarResource, CarBookingResource
+│   └── Service/
+│       ├── CarService
+│       ├── CarBookingService
+│       ├── ComfortCategoryService
+│       └── PositionService
+├── Models/
+└── Policies/               # CarPolicy, CarBookingPolicy, ComfortCategoryPolicy, PositionPolicy
+```
+
+---
+
+## Лицензия
+
+MIT

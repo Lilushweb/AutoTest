@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\ComfortCategory;
+use App\Models\Car;
 use App\Models\User;
 
-class ComfortCategoryPolicy
+class CarPolicy
 {
     public function viewAny(User $user): bool
     {
@@ -17,12 +17,12 @@ class ComfortCategoryPolicy
         return in_array($user->role ?? '', ['admin', 'manager']);
     }
 
-    public function update(User $user, ComfortCategory $comfortCategory): bool
+    public function update(User $user, Car $car): bool
     {
         return in_array($user->role ?? '', ['admin', 'manager']);
     }
 
-    public function delete(User $user, ComfortCategory $comfortCategory): bool
+    public function delete(User $user, Car $car): bool
     {
         return in_array($user->role ?? '', ['admin', 'manager']);
     }
