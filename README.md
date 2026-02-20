@@ -186,6 +186,37 @@ sessions           — для SESSION_DRIVER=database
 
 ---
 
+## Тесты
+
+Используется PHPUnit, БД для тестов — **PostgreSQL** (база `autotest_testing`). В `phpunit.xml` для локального запуска заданы `DB_HOST=127.0.0.1`, `DB_USERNAME=postgres` (чтобы не подставлялся хост `postgres` из .env для Docker). Пароль — из `.env` или переменной окружения `DB_PASSWORD`.
+
+Перед запуском создайте тестовую БД (если ещё нет):
+
+```bash
+# Локально
+createdb autotest_testing
+
+# В Docker
+docker compose exec postgres psql -U autotest -d postgres -c "CREATE DATABASE autotest_testing;"
+```
+
+Запуск:
+
+```bash
+php artisan test
+```
+
+**Что проверяется:**
+- **AuthApiTest** — регистрация (с `position_id`), вход, выход, получение текущего пользователя; валидация email.
+- **CarApiTest** — список автомобилей (только для авторизованных), создание/обновление/удаление (только manager/admin), доступные автомобили за период.
+- **CarBookingApiTest** — список своих бронирований, создание, обновление и удаление своего бронирования.
+- **PositionApiTest** — список должностей, создание/обновление/удаление (manager/admin).
+- **ComfortCategoryApiTest** — список категорий комфорта, создание/обновление/удаление (manager/admin).
+
+Базовый класс с хелперами: `tests/Feature/ApiTestCase.php` (RefreshDatabase, создание пользователей/менеджеров/админов, авто, бронирований, авторизованные запросы).
+
+---
+
 ## Структура проекта
 
 ```
