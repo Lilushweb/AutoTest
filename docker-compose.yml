@@ -1,0 +1,58 @@
+# Локальный запуск на готовых образах (без Dockerfile)
+# Запуск: docker compose up -d
+# Приложение: http://localhost:8080  |  Filament admin: http://localhost:8080/admin
+
+services:
+  app:
+    image: thecodingmachine/php:8.3-v4-fpm
+    container_name: autotest-app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    environment:
+      - PHP_EXTENSION_PGSQL=1
+      - PHP_EXTENSION_PDO_PGSQL=1
+      - PHP_EXTENSION_INTL=1
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=autotest
+      - DB_USERNAME=autotest
+      - DB_PASSWORD=secret
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: autotest-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: autotest-postgres
+    environment:
+      POSTGRES_DB: autotest
+      POSTGRES_USER: autotest
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U autotest -d autotest"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
